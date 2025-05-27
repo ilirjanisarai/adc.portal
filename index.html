@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ADC-TLM Portal</title>
+  <link rel="icon" type="image/png" href="images/adc.logo.png">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+    header {
+      background-color: #cc0000;
+      color: white;
+      padding: 10px 20px;
+      font-size: 24px;
+    }
+    .container {
+      display: flex;
+      height: calc(100vh - 60px);
+    }
+    .sidebar {
+      width: 250px;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-y: auto;
+    }
+    .sidebar-top {
+      padding: 10px;
+    }
+    .sidebar h3 {
+      cursor: pointer;
+      margin-bottom: 5px;
+      padding: 5px;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+    }
+    .submenu {
+      margin-left: 15px;
+      display: none;
+    }
+    .submenu a {
+      display: block;
+      margin: 5px 0;
+      color: white;
+      background-color: #999;
+      padding: 5px;
+      border-radius: 3px;
+      text-decoration: none;
+    }
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .home-button {
+      margin: 10px;
+      padding: 10px 15px;
+      background-color: #cc0000;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+      width: calc(100% - 20px);
+    }
+  </style>
+</head>
+<body>
+    <header>
+  <div class="header-content">
+    <img src="images/adc.logo1.png" alt="ADC Logo" class="logo">
+    <span class="header-title">Portal për Agjentët</span>
+  </div>
+</header>
+  <div class="container">
+    <div class="sidebar">
+      <div class="sidebar-top">
+        <h3 onclick="toggleMenu('sherbimet')">Vodafone</h3>
+        <div id="sherbimet" class="submenu">
+          <a href="vodafone-internet-fiks.html" target="contentFrame" onclick="hideWelcome()">Fix Rezidencial</a>
+          <a href="Vodafone/internet-calculator.html" target="contentFrame" onclick="hideWelcome()">Fiks Business</a>
+          <a href="vodafone-mobile-plans.html" target="contentFrame" onclick="hideWelcome()">Planet Mobile</a>
+        </div>
+		
+        <h3 onclick="toggleMenu('setup')">SetUp</h3>
+        <div id="setup" class="submenu">
+          <a href="Setup/Setup.html" target="contentFrame" onclick="hideWelcome()">SetUp Service</a>
+          <a href="Setup/Setup-script.html" target="contentFrame" onclick="hideWelcome()">SetUp Script</a>
+          <a href="Setup/Setup-prices.html" target="contentFrame" onclick="hideWelcome()">SetUp tariffs</a>
+        </div>		
+        <h3 onclick="toggleMenu('volton')">VoltOn</h3>
+        <div id="volton" class="submenu">
+          <a href="Volton/Calculator-Volton.html" target="contentFrame" onclick="hideWelcome()">Volton Calculator</a>
+          <a href="Volton/Volton-FAQ.html" target="contentFrame" onclick="hideWelcome()">Volton FAQ</a>
+          <a href="https://volton.al/" target="_blank" onclick="hideWelcome()">Volton website</a>
+        </div>		
+    <h3 onclick="toggleMenu('procedurat')">Procedurat</h3>
+    <div id="procedurat" class="submenu">
+      <a href="Documentation.html" target="contentFrame" onclick="hideWelcome()">Rinovim Kontrate</a>
+      <a href="Procedurat/new-activation-mobile.html" target="contentFrame" onclick="hideWelcome()">New Activation</a>
+      <a href="Procedurat/Procesi_Telesales_CRM.html" target="contentFrame" onclick="hideWelcome()">TLM Process</a>
+      <a href="TLM-scripts.html" target="contentFrame" onclick="hideWelcome()">Fushata Volton</a>
+      <a href="https://forms.office.com/e/JdsFWi6MFh" target="contentFrame" onclick="hideWelcome()">Agent Test Form</a>
+    </div>				
+		
+		
+		<h3 onclick="toggleMenu('skripte')">Skripte</h3>
+    <div id="skripte" class="submenu">
+      <a href="TLM-scripts.html" target="contentFrame" onclick="hideWelcome()">Skripti për Shitje</a>
+    </div>
+
+
+  </div>
+  <button class="home-button" onclick="goHome()">Kthehu në Faqen Kryesore</button>
+</div>
+<div class="main-content">
+  <div id="welcomeContent">
+    <p>Mirë se vini në portalin e agjentëve të ADC. Përdorni menunë në të majtë për të aksesuar dokumentet dhe udhëzimet e nevojshme.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Emërtimi</th>
+          <th>Përshkrimi</th>
+          <th>Linku</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Fix Rezidencial</td>
+          <td>Informacion mbi shërbimet për individët në shtëpi</td>
+          <td><a href="vodafone-internet-fiks.html" target="contentFrame" onclick="hideWelcome()">Shko tek faqja</a></td>
+        </tr>
+        <tr>
+          <td>Fiks Business</td>
+          <td>Detaje për ofertat për biznese</td>
+          <td><a href="pages/fiks_business.html" target="contentFrame" onclick="hideWelcome()">Shko tek faqja</a></td>
+        </tr>
+        <tr>
+          <td>Planet Mobile</td>
+          <td>Planet dhe tarifat për telefoninë mobile</td>
+          <td><a href="pages/planet_mobile.html" target="contentFrame" onclick="hideWelcome()">Shko tek faqja</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <iframe name="contentFrame"></iframe>
+</div>
+
+  </div> <script>
+    function toggleMenu(id) {
+      var menu = document.getElementById(id);
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function goHome() {
+      document.querySelector('iframe').src = '';
+      document.getElementById('welcomeContent').style.display = 'block';
+    }
+
+    function hideWelcome() {
+      document.getElementById('welcomeContent').style.display = 'none';
+    }
+  </script></body>
+</html>

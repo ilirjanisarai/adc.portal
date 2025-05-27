@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <title>Dy Kalkulatorë Krahasimi</title>
+  <style>
+    body {
+      font-family: Arial;
+      background-color: #f1f5f9;
+      padding: 20px;
+    }
+    h2 {
+      color: #1e3a8a;
+    }
+    .kalkulator {
+      background-color: #fff;
+      padding: 20px;
+      margin-bottom: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label, input {
+      display: block;
+      margin: 10px 0;
+    }
+    .result {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #065f46;
+    }
+    button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1d4ed8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="kalkulator">
+    <h2>Linja 10kw dhe 20kw – Konkurenti: 18.4 / Volton: 17.3</h2>
+    <label for="fatura1">Fatura mujore (me TVSH):</label>
+    <input type="number" id="fatura1" placeholder="P.sh. 3000" step="0.01">
+    <button onclick="llogarit(1, 18.4, 17.3)">Llogarit</button>
+    <div class="result" id="rezultati1"></div>
+  </div>
+
+  <div class="kalkulator">
+    <h2>Linja 35kw – Konkurenti: 15.9 / Volton: 14.6</h2>
+    <label for="fatura2">Fatura mujore (me TVSH):</label>
+    <input type="number" id="fatura2" placeholder="P.sh. 3000" step="0.01">
+    <button onclick="llogarit(2, 15.9, 14.6)">Llogarit</button>
+    <div class="result" id="rezultati2"></div>
+  </div>
+
+  <script>
+    function llogarit(numri, cmimiKonk, cmimiVolton) {
+      const fatura = parseFloat(document.getElementById(`fatura${numri}`).value);
+      if (isNaN(fatura) || fatura <= 0) {
+        alert("Ju lutem shkruani një shumë të vlefshme për faturën.");
+        return;
+      }
+
+      const faturaPaTVSH = fatura / 1.2;
+      const konsumKWH = faturaPaTVSH / cmimiKonk;
+      const faturaVolton = konsumKWH * cmimiVolton * 1.2;
+      const diferenca = fatura - faturaVolton;
+
+      document.getElementById(`rezultati${numri}`).innerHTML = `
+        Konsumi: ${konsumKWH.toFixed(2)} kWh<br>
+        Fatura me Volton: ${faturaVolton.toFixed(2)} lekë<br>
+        Kursimi: ${diferenca.toFixed(2)} lekë
+      `;
+    }
+  </script>
+
+</body>
+</html>
