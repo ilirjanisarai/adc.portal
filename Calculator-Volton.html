@@ -2,81 +2,108 @@
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
-  <title>Dy Kalkulatorë Krahasimi</title>
+  <title>Kalkulatori Volton</title>
   <style>
     body {
-      font-family: Arial;
-      background-color: #f1f5f9;
+      font-family: sans-serif;
       padding: 20px;
+      background-color: #f4f4f4;
     }
     h2 {
-      color: #1e3a8a;
+      color: #b40000;
+      font-size: 18px;
+      margin-bottom: 10px;
     }
-    .kalkulator {
-      background-color: #fff;
-      padding: 20px;
-      margin-bottom: 30px;
+    .calculator {
+      background: white;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 15px;
+      margin-bottom: 25px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+      max-width: 400px;
     }
-    label, input {
+    label {
       display: block;
-      margin: 10px 0;
+      font-size: 14px;
+      margin-bottom: 5px;
     }
-    .result {
-      margin-top: 15px;
-      font-weight: bold;
-      color: #065f46;
+    input {
+      width: 110px;
+      padding: 3px;
+      font-size: 14px;
     }
     button {
-      margin-top: 10px;
-      padding: 8px 16px;
-      background-color: #2563eb;
+      background-color: #28a745;
       color: white;
+      padding: 5px 10px;
       border: none;
-      border-radius: 5px;
+      border-radius: 4px;
+      margin-top: 10px;
       cursor: pointer;
+      font-size: 13px;
     }
-    button:hover {
-      background-color: #1d4ed8;
+    table {
+      width: auto;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 13px;
+    }
+    td {
+      padding: 3px 8px;
+      vertical-align: top;
+    }
+    .result {
+      margin-top: 10px;
+    }
+    .highlight {
+      color: green;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-  <div class="kalkulator">
-    <h2>Linja 10kw dhe 20kw – Konkurenti: 18.4 / Volton: 17.3</h2>
-    <label for="fatura1">Fatura mujore (me TVSH):</label>
-    <input type="number" id="fatura1" placeholder="P.sh. 3000" step="0.01">
-    <button onclick="llogarit(1, 18.4, 17.3)">Llogarit</button>
-    <div class="result" id="rezultati1"></div>
+  <div class="calculator">
+    <h2>Konkurrenti: 18.34 lekë/kWh | Volton: 17.3 lekë/kWh</h2>
+    <label>Fatura mujore me TVSH:</label>
+    <input type="number" id="fatura1" placeholder="p.sh. 5000" />
+    <button onclick="llogarit(18.34, 17.3, 'fatura1', 'rezultati1')">Llogarit</button>
+    <div id="rezultati1" class="result"></div>
   </div>
 
-  <div class="kalkulator">
-    <h2>Linja 35kw – Konkurenti: 15.9 / Volton: 14.6</h2>
-    <label for="fatura2">Fatura mujore (me TVSH):</label>
-    <input type="number" id="fatura2" placeholder="P.sh. 3000" step="0.01">
-    <button onclick="llogarit(2, 15.9, 14.6)">Llogarit</button>
-    <div class="result" id="rezultati2"></div>
+  <div class="calculator">
+    <h2>Konkurrenti: 15.9 lekë/kWh | Volton: 14.6 lekë/kWh</h2>
+    <label>Fatura mujore me TVSH:</label>
+    <input type="number" id="fatura2" placeholder="p.sh. 5000" />
+    <button onclick="llogarit(15.9, 14.6, 'fatura2', 'rezultati2')">Llogarit</button>
+    <div id="rezultati2" class="result"></div>
   </div>
 
   <script>
-    function llogarit(numri, cmimiKonk, cmimiVolton) {
-      const fatura = parseFloat(document.getElementById(`fatura${numri}`).value);
-      if (isNaN(fatura) || fatura <= 0) {
-        alert("Ju lutem shkruani një shumë të vlefshme për faturën.");
+    function formatNumber(num) {
+      return Math.round(num).toLocaleString('sq-AL');
+    }
+
+    function llogarit(cmimiKonkurrent, cmimiVolton, inputId, outputId) {
+      const vleraFatures = parseFloat(document.getElementById(inputId).value);
+      if (isNaN(vleraFatures) || vleraFatures <= 0) {
+        document.getElementById(outputId).innerText = "Ju lutem vendosni një vlerë të saktë për faturën.";
         return;
       }
 
-      const faturaPaTVSH = fatura / 1.2;
-      const konsumKWH = faturaPaTVSH / cmimiKonk;
-      const faturaVolton = konsumKWH * cmimiVolton * 1.2;
-      const diferenca = fatura - faturaVolton;
+      const paTVSH = vleraFatures / 1.2;
+      const konsumKWH = paTVSH / cmimiKonkurrent;
+      const faturaVoltonMeTVSH = konsumKWH * cmimiVolton * 1.2;
+      const diferencaMujore = vleraFatures - faturaVoltonMeTVSH;
+      const kursimiVjetor = diferencaMujore * 12;
 
-      document.getElementById(`rezultati${numri}`).innerHTML = `
-        Konsumi: ${konsumKWH.toFixed(2)} kWh<br>
-        Fatura me Volton: ${faturaVolton.toFixed(2)} lekë<br>
-        Kursimi: ${diferenca.toFixed(2)} lekë
+      document.getElementById(outputId).innerHTML = `
+        <table>
+          <tr><td>Konsumi:</td><td>${formatNumber(konsumKWH)} kWh</td></tr>
+          <tr><td>Fatura me Volton (me TVSH):</td><td>${formatNumber(faturaVoltonMeTVSH)} lekë</td></tr>
+          <tr><td>Kursimi mujor (me TVSH):</td><td>${formatNumber(diferencaMujore)} lekë</td></tr>
+          <tr><td class="highlight">Kursimi vjetor (me TVSH):</td><td class="highlight">${formatNumber(kursimiVjetor)} lekë</td></tr>
+        </table>
       `;
     }
   </script>
