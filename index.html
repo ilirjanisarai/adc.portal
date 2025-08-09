@@ -1,209 +1,369 @@
 <!DOCTYPE html>
 <html lang="sq">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ADC Portal</title>
+  <link rel="icon" type="image/png" href="adc.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ADC-TLM Portal</title>
-  <link rel="icon" type="image/png" href="adc.logo.png">
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      height: 100vh;
-      overflow: hidden;
+    :root{
+      --brand:#e60000;            /* e kuqja e ADC */
+      --brand-2:#d32f2f;          /* kuqe alternative */
+      --bg:#0b0c0f;               /* sfond i errët për hero/gradient */
+      --surface:#ffffff;          /* karta/panelet */
+      --muted:#6b7280;            /* gri teksti sekondar */
+      --line:#e6e7eb;             /* borde e lehtë */
+      --sidebar:#f7f7f8;          /* sfond anësor */
+      --shadow:0 10px 30px rgba(2,8,23,0.08);
     }
-    header {
-      background-color: #cc0000;
-      color: white;
-      padding: 10px 20px;
-      font-size: 24px;
+    @media (prefers-color-scheme: dark){
+      :root{
+        --surface:#111315;
+        --sidebar:#0e1012;
+        --line:#1f232a;
+        --bg:#0b0c0f;
+        --muted:#a3aab8;
+        --shadow:0 12px 30px rgba(0,0,0,0.35);
+      }
     }
-    .container {
-      display: flex;
-      height: calc(100vh - 60px);
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      background:linear-gradient(180deg, #ffffff 0%, #fafafa 60%, #f5f7fb 100%);
+      color:#111827;
     }
-    .sidebar {
-      width: 250px;
-      background-color: #f4f4f4;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow-y: auto;
+
+    /* Header */
+    header.appbar{
+      position:sticky; top:0; z-index:50;
+      display:flex; align-items:center; gap:14px;
+      padding:14px 18px;
+      background:linear-gradient(120deg, var(--bg) 0%, #20232a 60%, #1a1f26 100%);
+      color:#fff;
+      border-bottom:1px solid rgba(255,255,255,0.06);
     }
-    .sidebar-top {
-      padding: 10px;
+    .appbar .brand{display:flex; align-items:center; gap:12px; cursor:pointer}
+    .appbar img{height:36px; width:auto}
+    .appbar h1{font-size:18px; line-height:1; margin:0; font-weight:700; letter-spacing:.2px}
+    .appbar .spacer{flex:1}
+    .social-icons{display:flex; gap:14px; align-items:center}
+    .social-icons a{color:#e5e7eb; font-size:16px; transition:transform .2s ease, color .2s ease}
+    .social-icons a:hover{color:#fff; transform:translateY(-1px)}
+
+    /* Layout */
+    .layout{display:grid; grid-template-columns: 300px 1fr; min-height:calc(100vh - 64px)}
+    aside.sidebar{
+      position:sticky; top:64px;
+      height:calc(100vh - 64px);
+      overflow:auto;
+      background:var(--sidebar);
+      border-right:1px solid var(--line);
+      padding:16px;
     }
-    .sidebar h3 {
-      cursor: pointer;
-      margin-bottom: 5px;
-      padding: 5px;
-      background-color: #e0e0e0;
-      border-radius: 4px;
+    main.content{
+      padding:28px; min-height:calc(100vh - 64px);
+      background:transparent;
     }
-    .submenu {
-      margin-left: 15px;
-      display: none;
+
+    /* Sidebar groups */
+    .group{border:1px solid var(--line); border-radius:14px; background:var(--surface); box-shadow:var(--shadow); overflow:hidden; margin-bottom:14px}
+    .group summary{
+      list-style:none; cursor:pointer; user-select:none;
+      display:flex; align-items:center; gap:10px; padding:12px 14px; font-weight:700;
+      background:linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0));
     }
-    .submenu a {
-      display: block;
-      margin: 5px 0;
-      color: white;
-      background-color: #999;
-      padding: 5px;
-      border-radius: 3px;
-      text-decoration: none;
+    .group summary::-webkit-details-marker{display:none}
+    .group[data-color="vodafone"] summary i{color:#d32f2f}
+    .group[data-color="setup"] summary i{color:#912983}
+    .group[data-color="volton"] summary i{color:#2e7d32}
+    .group[data-color="albsig"] summary i{color:#2b6cb0}
+    .group[data-color="procedurat"] summary i{color:#f59e0b}
+    .group[data-color="skripte"] summary i{color:#06b6d4}
+    .group[data-color="hr"] summary i{color:#16a34a}
+    .group[data-color="b2b"] summary i{color:#8b5cf6}
+    .group[data-color="contracts"] summary i{color:#ef4444}
+
+    .group .menu{
+      padding:10px; display:grid; gap:8px; background:linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0));
     }
-    .main-content {
-      flex-grow: 1;
-      padding: 20px;
-      overflow-y: auto;
+
+    .menu button{
+      width:100%; text-align:left;
+      padding:10px 12px; border-radius:10px; border:1px solid var(--line);
+      background:#fff; color:#111827; font-weight:600; cursor:pointer;
+      transition:transform .12s ease, box-shadow .12s ease, background .2s ease, color .2s ease;
     }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
+    .menu button:hover{transform:translateY(-1px); box-shadow:var(--shadow)}
+    .menu button:focus{outline:3px solid rgba(230,0,0,.25)}
+    .menu button.active{background:#111827; color:#fff}
+
+    /* Section color accents */
+    .menu button[data-accent="vodafone"].active{background:#111827}
+    .menu button[data-accent="setup"].active{background:#2b1532}
+    .menu button[data-accent="volton"].active{background:#062b0b}
+
+    /* Primary actions */
+    .refresh-btn{
+      margin-top:10px; width:100%;
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      padding:12px; border-radius:12px; border:1px solid var(--line);
+      background:linear-gradient(180deg, #0ea5e9, #0284c7); color:#fff; font-weight:700; cursor:pointer;
+      box-shadow:var(--shadow);
     }
-    .home-button {
-      margin: 10px;
-      padding: 10px 15px;
-      background-color: #cc0000;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      border-radius: 5px;
-      width: calc(100% - 20px);
+    .refresh-btn:hover{filter:brightness(1.05)}
+
+    /* Welcome / cards */
+    .portal{max-width:1050px; margin:auto}
+    .hero{
+      background:linear-gradient(135deg, rgba(230,0,0,.06) 0%, rgba(230,0,0,.0) 60%),
+                 radial-gradient(800px 400px at 20% -10%, rgba(230,0,0,.18), transparent 60%),
+                 var(--surface);
+      border:1px solid var(--line);
+      border-radius:18px; padding:28px; box-shadow:var(--shadow);
+    }
+    .hero h2{margin:0 0 8px 0; color:var(--brand); font-size:28px}
+    .hero p{margin:0; color:var(--muted)}
+
+    .quick{margin-top:18px; display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px}
+    .qcard{
+      background:var(--surface); border:1px solid var(--line); border-left:6px solid var(--brand);
+      border-radius:14px; padding:14px 16px; box-shadow:var(--shadow);
+    }
+    .qcard a{display:inline-block; text-decoration:none; color:var(--brand); font-weight:700}
+    .qcard a:hover{text-decoration:underline}
+
+    /* Content frame */
+    .viewer{position:relative; height:70vh; border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--surface); box-shadow:var(--shadow)}
+    .viewer iframe{position:absolute; inset:0; width:100%; height:100%; border:0}
+    .loader{
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:12px;
+      background:linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.6));
+      backdrop-filter: blur(6px);
+      font-weight:700; color:#111827;
+    }
+    .dot{width:8px;height:8px;border-radius:999px;background:var(--brand);animation:bounce .9s infinite alternate}
+    .dot:nth-child(2){animation-delay:.15s}
+    .dot:nth-child(3){animation-delay:.3s}
+    @keyframes bounce{to{transform:translateY(-6px); opacity:.7}}
+
+    /* Mobile */
+    .toggle{display:none}
+    @media (max-width: 1024px){
+      .layout{grid-template-columns: 1fr}
+      aside.sidebar{position:fixed; top:64px; left:0; right:0; height:auto; max-height:65vh; transform:translateY(-120%); transition:transform .2s ease}
+      aside.sidebar.open{transform:translateY(0%)}
+      .toggle{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); background:#fff; color:#111827; padding:8px 12px; border-radius:10px; font-weight:700; cursor:pointer}
+      main.content{padding:18px}
     }
   </style>
 </head>
 <body>
-    <header>
-  <div class="header-content">
-    <img src="adc.logo1.png" alt="ADC Logo" class="logo">
-    <span class="header-title">Portal për Agjentët</span>
-  </div>
-</header>
-  <div class="container">
-    <div class="sidebar">
-      <div class="sidebar-top">
-        <h3 onclick="toggleMenu('sherbimet')">Vodafone</h3>
-        <div id="sherbimet" class="submenu">
-          <a href="vodafone-internet-fiks.html" target="contentFrame" onclick="hideWelcome()">Fix Rezidencial</a>
-          <a href="internet-calculator.html" target="contentFrame" onclick="hideWelcome()">Internet Calculator</a>
-          <a href="Planet e reja tarifore.html" target="contentFrame" onclick="hideWelcome()">Planet Mobile Business</a>
-	<a href="Planet-standarde-biznes.html" target="contentFrame" onclick="hideWelcome()">Planet Standard</a>	
-	<a href="Kanalet-Televizive.html" target="contentFrame" onclick="hideWelcome()">Kanalet Televizive</a>	
-        </div>
-		
-        <h3 onclick="toggleMenu('setup')">SetUp</h3>
-        <div id="setup" class="submenu">
-          <a href="Setup.html" target="contentFrame" onclick="hideWelcome()">SetUp Service</a>
-          <a href="Setup-script.html" target="contentFrame" onclick="hideWelcome()">SetUp Script</a>
-          <a href="Setup-prices.html" target="contentFrame" onclick="hideWelcome()">SetUp tariffs</a>
-	  <a href="Setup-training.html" target="contentFrame" onclick="hideWelcome()">Training Manual</a>
-        </div>		
-        <h3 onclick="toggleMenu('volton')">VoltOn</h3>
-        <div id="volton" class="submenu">
-          <a href="Calculator-Volton.html" target="contentFrame" onclick="hideWelcome()">Volton Calculator</a>
-          <a href="Volton-FAQ.html" target="contentFrame" onclick="hideWelcome()">Volton FAQ</a>
-          <a href="https://volton.al/" target="_blank" onclick="hideWelcome()">Volton website</a>
-        </div>	
-
- <h3 onclick="toggleMenu('albsig')">Albsig</h3>
-        <div id="albsig" class="submenu">
-          <a href="Albsig.html" target="contentFrame" onclick="hideWelcome()">Siguracionet</a>
-          
-        </div>		      
-	      
-    <h3 onclick="toggleMenu('procedurat')">Procedurat</h3>
-    <div id="procedurat" class="submenu">
-      <a href="Documentation.html" target="contentFrame" onclick="hideWelcome()">Documentation</a>
-      <a href="TLM Process.html" target="contentFrame" onclick="hideWelcome()">TLM Process</a>
-      <a href="https://forms.office.com/e/JdsFWi6MFh" target="contentFrame" onclick="hideWelcome()">Agent Test Form</a>
-    </div>				
-		
-		
-    <h3 onclick="toggleMenu('skripte')">Skripte</h3>
-    <div id="skripte" class="submenu">
-      <a href="TLM-Scripts.html" target="contentFrame" onclick="hideWelcome()">Skripti për Shitje</a>
+  <!-- Header -->
+  <header class="appbar" role="banner">
+    <div class="brand" onclick="resetToMain()" title="Kthehu në faqen kryesore">
+      <img src="logo.png" alt="ADC Logo" />
+      <h1>ADC Portal</h1>
     </div>
+    <div class="spacer"></div>
+    <button class="toggle" aria-expanded="false" aria-controls="sidebar" onclick="toggleSidebar(this)">
+      <i class="fa-solid fa-bars"></i> Menu
+    </button>
+    <nav class="social-icons" aria-label="Rrjetet sociale">
+      <a href="https://www.facebook.com" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://www.instagram.com/albanian_development_company?igsh=bXRobW45bmU0NWhm" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+    </nav>
+  </header>
 
-     <h3 onclick="toggleMenu('burimet njerezore')">Burimet Njerezore</h3>
-    <div id="burimet njerezore" class="submenu">
-      <a href="https://adc.al/careers" target="contentFrame" onclick="hideWelcome()">Vacancies</a>
-    </div>	      
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar" aria-label="Navigimi anësor">
 
-		<h3 onclick="toggleMenu('business 2 business')">Business 2 Business</h3>
-    <div id="business 2 business" class="submenu">
-      <a href="NCE Microsoft Office 365 Customer Presentation (002).pdf" target="contentFrame" onclick="hideWelcome()">Office 365</a>
-      <a href="Customer Presentation - Vodafone Business Online .pdf" target="contentFrame" onclick="hideWelcome()">Business Online</a>    
-    </div>		      
-    <h3 onclick="toggleMenu('contracts & forms')">Contracts & Forms</h3>
-    <div id="contracts & forms" class="submenu">
-      <a href="Forms&Contracts.html" target="contentFrame" onclick="hideWelcome()">Contracts & Forms</a>
-    </div>	
-	      
+      <details class="group" data-color="vodafone" open>
+        <summary><i class="fas fa-mobile-alt"></i> Vodafone</summary>
+        <div class="menu">
+          <button data-accent="vodafone" onclick="loadPage(this,'vodafone-internet-fiks-individ.html')">Fix Residencial</button>
+          <button data-accent="vodafone" onclick="loadPage(this,'vodafone_tariff_comparison.html')">Fix Business</button>
+          <button data-accent="vodafone" onclick="loadPage(this,'faqe_vodafone.html')">Ofertat Residencial</button>
+          <button data-accent="vodafone" onclick="loadPage(this,'Internet-Speed.html')">Internet Calculator</button>
+          <button data-accent="vodafone" onclick="loadPage(this,'planet_tarifore_biznes.html')">Planet Mobile Business</button>
+          <button data-accent="vodafone" onclick="loadPage(this,'Planet-standarde-biznes.html')">Planet Mobile Standard</button>
+          <button data-accent="vodafone" onclick="loadPage(this,'paketat_vodafone_interaktive_finale.html')">Kanalet Televizive</button>
+        </div>
+      </details>
+
+      <details class="group" data-color="setup">
+        <summary><i class="fas fa-cogs"></i> Setup</summary>
+        <div class="menu">
+          <button data-accent="setup" onclick="loadPage(this,'sherbimet_dhe_pikat_forta.html')">Set/Up service</button>
+          <button data-accent="setup" onclick="loadPage(this,'setup_script.html')">Set/Up script</button>
+          <button data-accent="setup" onclick="loadPage(this,'preventiv_website.html')">Website tariffs</button>
+          <button data-accent="setup" onclick="loadPage(this,'setup-dashboard.html')">Selling IT service</button>
+          <button data-accent="setup" onclick="loadPageExternal('https://setup.al/about-us/')">Set/Up web</button>
+        </div>
+      </details>
+
+      <details class="group" data-color="volton">
+        <summary><i class="fas fa-bolt"></i> Volton</summary>
+        <div class="menu">
+          <button data-accent="volton" onclick="loadPage(this,'Calculator-Volton.html')">Volton Calculator</button>
+          <button data-accent="volton" onclick="loadPage(this,'faq_volton.html')">Volton FAQ</button>
+          <button data-accent="volton" onclick="loadPageExternal('https://volton.al/#services')">Volton Website</button>
+        </div>
+      </details>
+
+      <details class="group" data-color="albsig">
+        <summary><i class="fas fa-shield-alt"></i> Albsig</summary>
+        <div class="menu">
+          <button onclick="loadPage(this,'Albsig.html')">Siguracionet</button>
+          <button onclick="loadPage(this,'sigurime_akomodimi.html')">Çmimet e Siguracioneve</button>
+        </div>
+      </details>
+
+      <details class="group" data-color="procedurat">
+        <summary><i class="fas fa-file-alt"></i> Procedurat</summary>
+        <div class="menu">
+          <button onclick="loadPage(this,'Documentation.html')">Documentation</button>
+          <button onclick="loadPage(this,'proceset_agjentit_tlm_final.html')">TLM processes</button>
+          <button onclick="loadPageExternal('https://forms.office.com/e/JdsFWi6MFh')">Agent test form</button>
+        </div>
+      </details>
+
+      <details class="group" data-color="skripte">
+        <summary><i class="fas fa-scroll"></i> Skripte</summary>
+        <div class="menu">
+          <button onclick="loadPage(this,'skripti_per_shitje.html')">Scripte për shitje</button>
+        </div>
+      </details>
+
+      <details class="group" data-color="hr">
+        <summary><i class="fas fa-users"></i> Burimet Njerezore</summary>
+        <div class="menu">
+          <button onclick="loadPageExternal('https://adc.al/careers')">Vacancies</button>
+        </div>
+      </details>
+
+      <details class="group" data-color="b2b">
+        <summary><i class="fas fa-briefcase"></i> Business 2 Business</summary>
+        <div class="menu">
+          <button onclick="loadPage(this,'vodafone_operator_csp.html')">Office 365 Special</button>
+          <button onclick="loadPage(this,'NCE Microsoft Office 365 Customer Presentation (002).pdf')">Office 365</button>
+          <button onclick="loadPage(this,'Prezantim Klienti - Vodafone Business Online.pdf')">Business Online</button>
+          <button onclick="loadPage(this,'business_on_the_go_vodafone.html')">BusinessOntheGO</button>
+        </div>
+      </details>
+
+      <details class="group" data-color="contracts">
+        <summary><i class="fas fa-folder-open"></i> Contracts & Forms</summary>
+        <div class="menu">
+          <button onclick="loadPage(this,'Forms&Contracts.html')">Contracts & Forms</button>
+        </div>
+      </details>
+
+      <button class="refresh-btn" onclick="refreshAndCloseMenus()">
+        <i class="fas fa-sync-alt"></i> Rifresko &amp; Mbyll Menutë
+      </button>
+    </aside>
+
+    <!-- Main content -->
+    <main class="content" id="content">
+      <div class="portal" id="home">
+        <section class="hero" role="region" aria-label="Mirë se vini">
+          <h2>Mirë se vini në ADC Portal</h2>
+          <p>Këtu do të gjeni informacionet dhe mjetet që ju duhen për punën e përditshme.</p>
+        </section>
+        <section class="quick" aria-label="Lidhje të shpejta">
+          <div class="qcard"><a href="#" onclick="loadPage(null,'faqe_vodafone.html')">Ofertat Fix Rezidencial</a></div>
+          <div class="qcard"><a href="#" onclick="loadPage(null,'faq_volton.html')">Volton FAQ</a></div>
+          <div class="qcard"><a href="#" onclick="loadPage(null,'sherbimet_dhe_pikat_forta.html')">Setup Service</a></div>
+          <div class="qcard"><a href="#" onclick="loadPage(null,'proceset_agjentit_tlm_final.html')">Proceset Vodafone</a></div>
+          <div class="qcard"><a href="#" onclick="loadPage(null,'siguracione_albsig.html')">Siguracionet Albsig</a></div>
+          <div class="qcard"><a target="_blank" rel="noopener" href="https://adc.al/careers">Pozicione të lira</a></div>
+        </section>
+      </div>
+
+      <div id="viewer" class="viewer" hidden>
+        <div class="loader" id="loader" aria-live="polite">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span>Po ngarkohet…</span>
+        </div>
+        <iframe id="frame" title="Përmbajtja" src=""></iframe>
+      </div>
+    </main>
   </div>
-  <button class="home-button" onclick="goHome()">Kthehu në Faqen Kryesore</button>
-</div>
-<div class="main-content">
-  <div id="welcomeContent">
 
-<!-- Tabela me titull dhe butona "Shiko më tepër" -->
-<div style="display: flex; justify-content: center; margin-top: 40px;">
-  <table style="border-collapse: collapse; width: 70%; max-width: 600px; background-color: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-    <tr>
-      <th colspan="2" style="background-color: #f0f0f0; font-size: 20px; padding: 15px; text-align: center;">Informacione të rëndësishme</th>
-    </tr>
-    <tr>
-      <td style="padding: 12px;">Kontrata dhe Formulare</td>
-      <td style="text-align: center;">
-        <button onclick="window.location.href='Forms&Contracts.html'" style="padding: 6px 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">Shiko më tepër</button>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding: 12px;">Microsoft Office</td>
-      <td style="text-align: center;">
-        <button onclick="window.location.href='NCE Microsoft Office 365 Customer Presentation (002).pdf'" style="padding: 6px 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">Shiko më tepër</button>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding: 12px;">Fix Rezidencial Oferta</td>
-      <td style="text-align: center;">
-        <button onclick="window.location.href='Oferta-Sezonale_Fiks'" style="padding: 6px 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">Shiko më tepër</button>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding: 12px;">Paketa Kanale Televizive</td>
-      <td style="text-align: center;">
-        <button onclick="window.location.href='Kanalet-Televizive'" style="padding: 6px 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">Shiko më tepër</button>
-      </td>
-    </tr>
-  </table>
-</div>
-
-	  
-	      
-      </tbody>
-    </table>
-  </div>
-  <iframe name="contentFrame"></iframe>
-</div>
-
-  </div> <script>
-    function toggleMenu(id) {
-      var menu = document.getElementById(id);
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+  <script>
+    // Sidebar open/close for mobile
+    function toggleSidebar(btn){
+      const sidebar = document.getElementById('sidebar');
+      const open = !sidebar.classList.contains('open');
+      sidebar.classList.toggle('open', open);
+      if(btn){ btn.setAttribute('aria-expanded', String(open)); }
     }
 
-    function goHome() {
-      document.querySelector('iframe').src = '';
-      document.getElementById('welcomeContent').style.display = 'block';
+    // Close all <details> groups
+    function closeAllMenus(){
+      document.querySelectorAll('aside details').forEach(d=>{ d.open=false; });
     }
 
-    function hideWelcome() {
-      document.getElementById('welcomeContent').style.display = 'none';
+    function refreshAndCloseMenus(){
+      const frame = document.getElementById('frame');
+      if(frame && frame.src){ frame.contentWindow?.location.reload(); }
+      closeAllMenus();
     }
-  </script></body>
+
+    function showViewer(){
+      document.getElementById('home').hidden = true;
+      document.getElementById('viewer').hidden = false;
+    }
+
+    function showHome(){
+      document.getElementById('viewer').hidden = true;
+      document.getElementById('home').hidden = false;
+    }
+
+    function setActive(btn){
+      document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active'));
+      if(btn){ btn.classList.add('active'); }
+    }
+
+    function loadPage(btn, url){
+      setActive(btn);
+      showViewer();
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.remove('open');
+
+      const frame = document.getElementById('frame');
+      const loader = document.getElementById('loader');
+      loader.style.display = 'flex';
+
+      // Little delay to show the loader transition nicely
+      requestAnimationFrame(()=>{
+        frame.src = url;
+      });
+
+      frame.onload = () => { loader.style.display = 'none'; };
+      frame.onerror = () => { loader.innerHTML = '<span style="font-weight:700;color:#ef4444">Nuk u ngarkua përmbajtja.</span>'; };
+    }
+
+    function loadPageExternal(url){
+      window.open(url, '_blank', 'noopener');
+    }
+
+    function resetToMain(){
+      setActive(null);
+      showHome();
+      closeAllMenus();
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+  </script>
+</body>
 </html>
